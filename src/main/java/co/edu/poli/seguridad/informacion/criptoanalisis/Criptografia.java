@@ -55,7 +55,6 @@ public class Criptografia {
                 double sumaTemporal = valor * Math.pow(ALFABETO, i);
                 suma += sumaTemporal;
             }
-            logger.debug("segmento terminado, procesando segmento, suma=" + suma);
             boolean cifrar = (cifrando == 'c' ? true : false);
 
             BigDecimal segmentoEnDecimal;
@@ -85,21 +84,16 @@ public class Criptografia {
 
     public void ejecutar2() throws IOException {
 
-        System.out.println("llave publica separada por espacio de forma (e n)");
-        System.out.println("texto");
         int[] arr = factorizaciones(n);
         int p = arr[0];
         int q = arr[1];
         int fi = (p - 1) * (q - 1);
-        int d = (int) gcdExtendido(e, fi)[1];
+        BigInteger biE = new BigInteger(String.valueOf(e));
+        int d = biE.modInverse(new BigInteger(String.valueOf(fi))).intValue();
         System.out.println("la llave privada es " + d + " " + n);
         System.out.print("el resultado es: ");
         int seg = 3;
         int pots = 27;
-        // for (seg = 0; pots < n; seg++)
-        // pots*=27;
-        System.out.println("numero de segmentacion");
-        System.out.println("c para cifrado d para desifrado");
         long suma = 0;
         for (int i = 0; i < line.length(); i++) {
             int pot = seg - 1 - (i % seg);

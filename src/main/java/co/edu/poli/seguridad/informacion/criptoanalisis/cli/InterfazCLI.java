@@ -37,7 +37,11 @@ public class InterfazCLI {
         }
 
         Criptografia criptografia = new Criptografia(e, n, t, s, cifrando);
-        criptografia.ejecutar();
+        if (commandLine.hasOption("a")) {
+            criptografia.ejecutar2();
+        } else {
+            criptografia.ejecutar();
+        }
     }
 
     private static boolean validarArgumentos(Options opciones, CommandLine commandLine) {
@@ -60,6 +64,7 @@ public class InterfazCLI {
                 .addOption("n", "modulo", true, "el valor de n de la llave pública")
                 .addOption("t", "texto", true, "texto a procesar")
                 .addOption("s", "segmentos", true, "número de segmentos")
+                .addOption("a", "algoritmo-alternativo", false, "algoritmo alternativo")
         ;
 
         return opciones;
