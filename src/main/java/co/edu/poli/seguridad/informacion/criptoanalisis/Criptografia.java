@@ -64,7 +64,7 @@ public class Criptografia {
                 segmentoEnDecimal = biSuma.modPow(biE, biN);
             } else {
                 BigInteger biSuma = new BigInteger(String.valueOf(suma));
-                segmentoEnDecimal = biSuma.remainder(biN);
+                segmentoEnDecimal = biSuma.modPow(biD, biN);
             }
 
             String segmentoEnBase27 = Integer.toString(segmentoEnDecimal.intValue(), ALFABETO);
