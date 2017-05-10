@@ -41,6 +41,7 @@ public class Criptografia {
 
         BigInteger biE = new BigInteger(String.valueOf(e));
         BigInteger biD = biE.modInverse(new BigInteger(String.valueOf(phi)));
+        BigInteger biN = new BigInteger(String.valueOf(n));
 
         PrintWriter out = new PrintWriter(System.out);
         out.println("la llave privada es " + biD + " " + n);
@@ -57,17 +58,13 @@ public class Criptografia {
             }
             boolean cifrar = (cifrando == 'c' ? true : false);
 
-            BigDecimal segmentoEnDecimal;
+            BigInteger segmentoEnDecimal;
             if (cifrar) {
-                BigDecimal bdSuma = new BigDecimal(suma);
-                BigDecimal bdPow = bdSuma.pow(e);
-                BigDecimal bdN = new BigDecimal(String.valueOf(n));
-                segmentoEnDecimal = bdPow.remainder(bdN);
+                BigInteger biSuma = new BigInteger(String.valueOf(suma));
+                segmentoEnDecimal = biSuma.modPow(biE, biN);
             } else {
-                BigDecimal bdSuma = new BigDecimal(suma);
-                BigDecimal bdPow = bdSuma.pow(biD.intValue());
-                BigDecimal bdN = new BigDecimal(String.valueOf(n));
-                segmentoEnDecimal = bdPow.remainder(bdN);
+                BigInteger biSuma = new BigInteger(String.valueOf(suma));
+                segmentoEnDecimal = biSuma.remainder(biN);
             }
 
             String segmentoEnBase27 = Integer.toString(segmentoEnDecimal.intValue(), ALFABETO);
