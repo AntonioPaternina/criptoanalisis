@@ -1,3 +1,4 @@
+
 package co.edu.poli.seguridad.informacion.criptoanalisis;
 
 import org.slf4j.Logger;
@@ -9,12 +10,14 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import static sun.security.krb5.Confounder.intValue;
 
 public class Criptografia {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    // private Logger logger =
+    // LoggerFactory.getLogger(this.getClass().getName());
 
     private int e;
     private int n;
@@ -80,17 +83,24 @@ public class Criptografia {
     }
 
     public void ejecutar2() throws IOException {
-
+        PrintWriter out = new PrintWriter(System.out);
         int[] arr = factorizaciones(n);
         int p = arr[0];
         int q = arr[1];
         int fi = (p - 1) * (q - 1);
-        BigInteger biE = new BigInteger(String.valueOf(e));
-        int d = biE.modInverse(new BigInteger(String.valueOf(fi))).intValue();
-        System.out.println("la llave privada es " + d + " " + n);
-        System.out.print("el resultado es: ");
-        int seg = 3;
+        int d = BigInteger.valueOf(e).modInverse(BigInteger.valueOf(fi)).intValue();
+        out.println("la llave privada es " + d + " " + n);
+        out.print("el resultado es: ");
         int pots = 27;
+        // for (seg = 0; pots < n; seg++)
+        // pots*=27;
+        if (cifrando == 'd') {
+            StringTokenizer st = new StringTokenizer(line);
+            seg = line.indexOf(';');
+            if (seg == -1)
+                seg = 1;
+            line = line.replaceAll(";", "");
+        }
         long suma = 0;
         for (int i = 0; i < line.length(); i++) {
             int pot = seg - 1 - (i % seg);
@@ -119,12 +129,12 @@ public class Criptografia {
                 }
                 pots /= 27;
                 sb.append(valorDeCaracter((int) m / pots));
-                System.out.print(sb.reverse());
+                out.print(sb.reverse());
                 suma = 0;
             }
         }
-        System.out.println();
-        System.out.close();
+        out.println();
+        out.close();
     }
 
     private int valorDeCaracter(char c) {
@@ -148,7 +158,7 @@ public class Criptografia {
         int[] primos = primos(1000);
         for (int i = 0; i < primos.length; i++) {
             if (n % primos[i] == 0)
-                return new int[]{primos[i], n / primos[i]};
+                return new int[] { primos[i], n / primos[i] };
         }
         return null;
     }
@@ -187,7 +197,7 @@ public class Criptografia {
             x = xTmp;
             y = yTmp;
         }
-        return new long[]{a, bs ? yAnt : xAnt, bs ? xAnt : yAnt};
+        return new long[] { a, bs ? yAnt : xAnt, bs ? xAnt : yAnt };
     }
 
     private List<String> segmentarCadena(String cadena, int longitudMaxima) {
