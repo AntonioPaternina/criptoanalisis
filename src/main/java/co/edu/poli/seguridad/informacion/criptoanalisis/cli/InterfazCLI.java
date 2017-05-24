@@ -28,7 +28,10 @@ public class InterfazCLI {
         int e = Integer.parseInt(commandLine.getOptionValue("e"));
         int n = Integer.parseInt(commandLine.getOptionValue("n"));
         String t = commandLine.getOptionValue("t");
-        int s = Integer.parseInt(commandLine.getOptionValue("s"));
+        int s = 0;
+        if (commandLine.hasOption("s")) {
+            s = Integer.parseInt(commandLine.getOptionValue("s"));
+        }
         char cifrando;
         if (commandLine.hasOption("c")) {
             cifrando = 'c';
@@ -46,7 +49,11 @@ public class InterfazCLI {
 
     private static boolean validarArgumentos(Options opciones, CommandLine commandLine) {
         boolean valido = (commandLine.hasOption("c") || commandLine.hasOption("d")) && commandLine.hasOption("e") &&
-                commandLine.hasOption("n") && commandLine.hasOption("t") && commandLine.hasOption("s");
+                commandLine.hasOption("n") && commandLine.hasOption("t");
+
+        valido &= ((commandLine.hasOption("c") && commandLine.hasOption("s")) || (commandLine.hasOption("d") &&
+                !commandLine.hasOption("s")));
+
         if (!valido) {
             imprimirAyuda(opciones, 80, "Ayuda Utilidad Criptoanálisis", "Fin de la ayuda",
                     5, 3, true, System.out);

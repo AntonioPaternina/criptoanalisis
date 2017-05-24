@@ -1,6 +1,7 @@
 
 package co.edu.poli.seguridad.informacion.criptoanalisis;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,6 +10,7 @@ import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -50,36 +52,46 @@ public class Criptografia {
         out.println("la llave privada es " + biD + " " + n);
         out.print("el resultado es: ");
 
-        List<String> cadenas = segmentarCadena(line, seg);
-        for (String segmento : cadenas) {
-            long suma = 0;
+        boolean esCifrar = (cifrando == 'c' ? true : false);
+        List<String> segmentos = obtenerSegmentos(esCifrar);
+        for (String segmento : segmentos) {
+            long segmentoOriginalEnDecimal = 0;
             for (int i = 0; i < segmento.length(); i++) {
                 char caracter = segmento.charAt(segmento.length() - 1 - i);
                 int valor = valorDeCaracter(caracter);
-                double sumaTemporal = valor * Math.pow(ALFABETO, i);
-                suma += sumaTemporal;
+                segmentoOriginalEnDecimal += valor * Math.pow(ALFABETO, i);
             }
-            boolean cifrar = (cifrando == 'c' ? true : false);
 
-            BigInteger segmentoEnDecimal;
-            if (cifrar) {
-                BigInteger biSuma = new BigInteger(String.valueOf(suma));
-                segmentoEnDecimal = biSuma.modPow(biE, biN);
+            BigInteger segmentoProcesadoEnDecimal;
+            if (esCifrar) {
+                BigInteger biSuma = new BigInteger(String.valueOf(segmentoOriginalEnDecimal));
+                segmentoProcesadoEnDecimal = biSuma.modPow(biE, biN);
             } else {
-                BigInteger biSuma = new BigInteger(String.valueOf(suma));
-                segmentoEnDecimal = biSuma.modPow(biD, biN);
+                BigInteger biSuma = new BigInteger(String.valueOf(segmentoOriginalEnDecimal));
+                segmentoProcesadoEnDecimal = biSuma.modPow(biD, biN);
             }
 
-            String segmentoEnBase27 = Integer.toString(segmentoEnDecimal.intValue(), ALFABETO);
+            String segmentoEnBaseDelAlfabeto = Integer.toString(segmentoProcesadoEnDecimal.intValue(), ALFABETO);
 
-            for (char caracter : segmentoEnBase27.toCharArray()) {
+            for (char caracter : segmentoEnBaseDelAlfabeto.toCharArray()) {
                 int caracterEnDecimal = Integer.parseInt(String.valueOf(caracter), ALFABETO);
                 char caracterDecodificado = valorDeCaracter(caracterEnDecimal);
                 out.print(caracterDecodificado);
             }
+            out.print(";");
         }
         out.println();
         out.close();
+    }
+
+    private List<String> obtenerSegmentos(boolean cifrar) {
+        List<String> cadenas;
+        if (cifrar) {
+            cadenas = segmentarCadena(line, seg);
+        } else {
+            cadenas = Arrays.asList(StringUtils.split(line, ";"));
+        }
+        return cadenas;
     }
 
     public void ejecutar2() throws IOException {
@@ -138,19 +150,19 @@ public class Criptografia {
     }
 
     private int valorDeCaracter(char c) {
-        if (c <= 'n')
-            return c - 'a';
-        if (c == 'ñ')
-            return 'n' + 1 - 'a';
-        return c + 1 - 'a';
+        if (c <= 'N')
+            return c - 'A';
+        if (c == 'Ñ')
+            return 'N' + 1 - 'A';
+        return c + 1 - 'A';
     }
 
     private char valorDeCaracter(int c) {
-        c += 'a';
-        if (c <= 'n')
+        c += 'A';
+        if (c <= 'N')
             return (char) c;
-        if (c == 'o')
-            return 'ñ';
+        if (c == 'O')
+            return 'Ñ';
         return (char) (c - 1);
     }
 
@@ -158,7 +170,7 @@ public class Criptografia {
         int[] primos = primos(1000);
         for (int i = 0; i < primos.length; i++) {
             if (n % primos[i] == 0)
-                return new int[] { primos[i], n / primos[i] };
+                return new int[]{primos[i], n / primos[i]};
         }
         return null;
     }
@@ -197,7 +209,7 @@ public class Criptografia {
             x = xTmp;
             y = yTmp;
         }
-        return new long[] { a, bs ? yAnt : xAnt, bs ? xAnt : yAnt };
+        return new long[]{a, bs ? yAnt : xAnt, bs ? xAnt : yAnt};
     }
 
     private List<String> segmentarCadena(String cadena, int longitudMaxima) {
