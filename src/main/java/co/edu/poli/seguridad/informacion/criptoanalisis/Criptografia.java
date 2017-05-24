@@ -78,7 +78,9 @@ public class Criptografia {
                 char caracterDecodificado = valorDeCaracter(caracterEnDecimal);
                 out.print(caracterDecodificado);
             }
-            out.print(";");
+            if (esCifrar) {
+                out.print(";");
+            }
         }
         out.println();
         out.close();
